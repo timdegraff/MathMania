@@ -57,28 +57,64 @@ h1, h2 {
 
 #difficulty-buttons, #mission-buttons {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column; /* Vertical layout */
+    align-items: center;
     gap: 1rem;
+    width: 100%;
 }
 
 button {
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.4rem; /* Bigger font */
     background-color: var(--light-blue);
     color: var(--white);
     border: 2px solid var(--fuel-blue);
     border-radius: 8px;
-    padding: 12px 24px;
+    padding: 16px 32px; /* Bigger padding */
     cursor: pointer;
     transition: all 0.2s ease;
     text-transform: uppercase;
+    width: 80%;
+    max-width: 400px;
 }
 
 button:hover {
     background-color: var(--fuel-blue);
     box-shadow: 0 0 10px var(--fuel-blue);
 }
+
+/* --- Mission Selection Buttons with Images --- */
+.mission-button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 20px;
+    text-align: left;
+}
+
+.mission-button img {
+    width: 60px;
+    height: 60px;
+    margin-right: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--white);
+}
+
+.mission-button .mission-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.mission-button .mission-info span:first-child {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.mission-button .mission-info span:last-child {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
 
 #submit-answer-btn {
     background-color: var(--rocket-red);
@@ -192,17 +228,31 @@ button:hover {
     align-items: center;
     white-space: pre; /* Important for formatting */
     line-height: 1.2;
+    width: 250px; /* Fixed width for alignment */
+}
+
+/* FIX for superscript rendering */
+#problem-container sup {
+    font-size: 0.5em; /* Make exponent smaller */
+    vertical-align: super; /* Ensure it's aligned as a superscript */
+    font-family: 'Roboto', sans-serif; /* Use a font that renders it well */
+    position: relative;
+    top: -0.6em; /* Fine-tune vertical position */
+    left: 0.1em;
 }
 
 #answer-container {
     display: flex;
+    flex-direction: column; /* Stack input and button vertically */
     gap: 1rem;
     align-items: center;
+    width: 250px; /* Match problem container width */
 }
 
 #answer-input {
     font-size: 2rem;
-    width: 150px;
+    width: 100%; /* Make input take full width of container */
+    box-sizing: border-box; /* Include padding in width */
     padding: 10px;
     text-align: center;
     background: var(--text-light);
