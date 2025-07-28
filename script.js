@@ -29,16 +29,16 @@ const gameConfig = {
     difficultyLevels: {
         'K-1': {
             label: 'Grades K-1',
-            types: ['add', 'subtract'],
-            numberRange: [1, 10],
-            fuelDrainRate: 1.0 // % per second (2x faster than 2-3)
+            types: ['add'], // Only addition
+            numberRange: [1, 9], // Range for generating numbers
+            fuelDrainRate: 3.0 // % per second
         },
         '2-3': {
             label: 'Grades 2-3',
             types: ['add', 'subtract', 'multiply', 'divide'],
             numberRange: [2, 20],
             multDivRange: [2, 10],
-            fuelDrainRate: 0.5
+            fuelDrainRate: 3.0 // % per second
         },
         '4-5': {
             label: 'Grades 4-5',
@@ -47,7 +47,7 @@ const gameConfig = {
             multDivRange: [2, 25],
             powerBaseRange: [2, 5],
             powerExpRange: [2, 3],
-            fuelDrainRate: 0.7
+            fuelDrainRate: 3.0 // % per second
         },
         '6-8': {
             label: 'Grades 6-8',
@@ -56,7 +56,7 @@ const gameConfig = {
             multDivRange: [5, 50],
             powerBaseRange: [2, 10],
             powerExpRange: [2, 4],
-            fuelDrainRate: 1.0
+            fuelDrainRate: 3.0 // % per second
         }
     },
     missions: {
@@ -378,8 +378,14 @@ function generateProblems() {
 
         switch (type) {
             case 'add':
-                num1 = rand(numberRange[0], numberRange[1]);
-                num2 = rand(numberRange[0], numberRange[1]);
+                if (currentDifficulty === 'K-1') {
+                    // Specific logic for K-1: single digit answers, no zeros
+                    num1 = rand(1, 8);
+                    num2 = rand(1, 9 - num1);
+                } else {
+                    num1 = rand(numberRange[0], numberRange[1]);
+                    num2 = rand(numberRange[0], numberRange[1]);
+                }
                 answer = num1 + num2;
                 operator = '+';
                 break;
