@@ -235,6 +235,9 @@ function handleSubmit() {
     currentProblemIndex++;
     updateProgress();
     
+    // Re-focus input to keep keyboard open on mobile
+    answerInput.focus();
+
     // Short delay before showing the next problem
     setTimeout(displayNextProblem, 500);
 }
