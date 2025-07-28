@@ -31,7 +31,7 @@ const gameConfig = {
             label: 'Grades K-1',
             types: ['add', 'subtract'],
             numberRange: [1, 10],
-            fuelDrainRate: 0.6 // % per second (2x faster)
+            fuelDrainRate: 1.0 // % per second (2x faster than 2-3)
         },
         '2-3': {
             label: 'Grades 2-3',
@@ -61,17 +61,17 @@ const gameConfig = {
     },
     missions: {
         'Mars': {
-            label: 'Mission to Mars',
+            label: 'Mars',
             questions: 10,
             image: 'images/mars.png'
         },
         'Saturn': {
-            label: 'Mission to Saturn',
+            label: 'Saturn',
             questions: 25,
             image: 'images/saturn.png'
         },
         'Pluto': {
-            label: 'Mission to Pluto',
+            label: 'Pluto',
             questions: 50,
             image: 'images/pluto.png'
         }
@@ -148,9 +148,11 @@ function setupMissionScreen() {
         infoDiv.classList.add('mission-info');
         
         const titleSpan = document.createElement('span');
+        titleSpan.classList.add('planet-name');
         titleSpan.textContent = mission.label;
         
         const questionSpan = document.createElement('span');
+        questionSpan.classList.add('question-count');
         questionSpan.textContent = `${mission.questions} Questions`;
 
         infoDiv.appendChild(titleSpan);
@@ -436,7 +438,7 @@ function formatProblem(problem, isInline = false) {
         return isInline ? `${num1}<sup>${num2}</sup>` : `${num1}<sup>${num2}</sup>`;
     }
     if (operator === '÷') {
-        return isInline ? `${num1} ÷ ${num2}` : `${num2})${num1}`;
+        return isInline ? `${num1} ÷ ${num2}` : `${num1} ÷ ${num2}`;
     }
 
     const topStr = String(num1);
