@@ -63,17 +63,17 @@ const gameConfig = {
         'Mars': {
             label: 'Mission to Mars',
             questions: 10,
-            image: 'https://placehold.co/600x400/E57373/FFFFFF?text=MARS'
+            image: 'images/mars.png'
         },
         'Saturn': {
             label: 'Mission to Saturn',
             questions: 25,
-            image: 'https://placehold.co/600x400/FFB74D/FFFFFF?text=SATURN'
+            image: 'images/saturn.png'
         },
         'Pluto': {
             label: 'Mission to Pluto',
             questions: 50,
-            image: 'https://placehold.co/600x400/81C784/FFFFFF?text=PLUTO'
+            image: 'images/pluto.png'
         }
     },
     fuel: {
@@ -96,7 +96,20 @@ let fuel = 0;
 let fuelDrainInterval = null;
 let wrongAnswers = [];
 
-// --- Game Initialization ---
+// --- Sound Effects (Updated with .wav files) ---
+const clickSound = new Audio('sounds/click.mp3');
+const correctSound = new Audio('sounds/correct.wav');
+const incorrectSound = new Audio('sounds/incorrect.wav');
+const successSound = new Audio('sounds/success.wav');
+const failureSound = new Audio('sounds/failure.mp3');
+
+
+function playSound(sound) {
+    sound.currentTime = 0;
+    sound.play().catch(e => console.error("Error playing sound:", e));
+}
+
+// --- Initial Game Setup ---
 function init() {
     setupDifficultyScreen();
     submitBtn.addEventListener('click', handleSubmit);
@@ -131,6 +144,7 @@ function setupMissionScreen() {
 
 // --- Game Flow ---
 function selectDifficulty(key) {
+    playSound(clickSound);
     currentDifficulty = key;
     difficultyScreen.classList.add('hidden');
     missionScreen.classList.remove('hidden');
@@ -138,6 +152,7 @@ function selectDifficulty(key) {
 }
 
 function selectMission(key) {
+    playSound(clickSound);
     currentMission = key;
     missionScreen.classList.add('hidden');
     startGame();
@@ -162,6 +177,7 @@ function startGame() {
     
     // Start fuel drain
     const drainRate = gameConfig.difficultyLevels[currentDifficulty].fuelDrainRate;
+    if (fuelDrainInterval) clearInterval(fuelDrainInterval);
     fuelDrainInterval = setInterval(() => {
         fuel -= drainRate / 10; // Drain every 100ms for smoother feel
         updateFuelGauge();
@@ -203,11 +219,13 @@ function handleSubmit() {
 }
 
 function handleCorrectAnswer() {
+    playSound(correctSound);
     flashScreen(true);
     animateFuelChange(true);
 }
 
 function handleIncorrectAnswer(userAnswer) {
+    playSound(incorrectSound);
     flashScreen(false);
     triggerAsteroidImpact();
     animateFuelChange(false);
@@ -223,11 +241,13 @@ function endGame(success) {
     endScreen.classList.remove('hidden');
 
     if (success) {
+        playSound(successSound);
         missionSuccessScreen.classList.remove('hidden');
         missionFailureScreen.classList.add('hidden');
         successTitle.textContent = `Touchdown on ${currentMission}!`;
         successImage.src = gameConfig.missions[currentMission].image;
     } else {
+        playSound(failureSound);
         missionSuccessScreen.classList.add('hidden');
         missionFailureScreen.classList.remove('hidden');
     }
@@ -236,6 +256,7 @@ function endGame(success) {
 }
 
 function restartGame() {
+    playSound(clickSound);
     endScreen.classList.add('hidden');
     difficultyScreen.classList.remove('hidden');
 }
@@ -273,7 +294,7 @@ function flashScreen(isCorrect) {
 
 function triggerAsteroidImpact() {
     asteroid.classList.remove('hidden', 'asteroid-impact');
-    // void asteroid.offsetWidth; // Trigger reflow
+    void asteroid.offsetWidth; // Trigger reflow
     asteroid.classList.add('asteroid-impact');
 }
 
@@ -377,7 +398,6 @@ function formatProblem(problem, isInline = false) {
         return isInline ? `${num1}<sup>${num2}</sup>` : `${num1}<sup>${num2}</sup>`;
     }
     if (operator === '÷') {
-        const line = '&# डिवीज़न स्लैश;'.replace('&# डिवीज़न स्लैश;', '&#275;'.repeat(String(num1).length + 2));
         return isInline ? `${num1} ÷ ${num2}` : `${num2})${num1}`;
     }
 
