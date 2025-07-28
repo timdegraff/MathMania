@@ -333,36 +333,55 @@ input[type=number] {
     font-size: 1.1rem;
 }
 
-/* --- Responsive Design for Mobile --- */
+/* --- Responsive Design for Tablets --- */
 @media (max-width: 768px) {
-    #game-container {
-        padding: 1rem;
-        position: relative;
-        height: 90vh; /* Make container take most of screen height */
-    }
     .game-main-content {
         flex-direction: column;
-        justify-content: center; /* Center problem area vertically */
-        height: 100%;
+    }
+    #fuel-gauge-container { order: 2; }
+    #problem-area { order: 1; }
+    #spaceship-container { order: 3; height: 150px; }
+    #problem-container { font-size: 2.5rem; }
+}
+
+/* --- Responsive Design for Phones --- */
+@media (max-width: 480px) {
+    #game-container {
+        padding: 0.5rem;
+        height: calc(100vh - 2rem); /* Full screen height minus body padding */
+        display: flex;
+        flex-direction: column;
+    }
+    #game-screen {
+        flex-grow: 1; /* Allow game screen to fill space */
+    }
+    .game-main-content {
+        position: relative;
+        flex-grow: 1;
     }
     #fuel-gauge-container {
         position: absolute;
-        top: 80px; /* Position below sticky header */
-        left: 10px;
-        height: 40%; /* Take top half of screen */
-    }
-    #fuel-gauge {
-        height: 100%;
+        top: 0;
+        left: 5px;
+        height: 50%;
+        transform: scale(0.5); /* Shrink by 50% */
+        transform-origin: top left;
     }
     #spaceship-container {
-        position: absolute;
-        top: 80px;
-        right: 10px;
-        width: 80px;  /* Shrink spaceship */
-        height: 120px;
+        display: none; /* Hide spaceship on small screens */
     }
     #problem-area {
-        margin-top: 0;
-        justify-content: center; /* Center problem vertically */
+        width: 100%;
+        justify-content: center;
+    }
+    #problem-container {
+        width: 80%;
+        font-size: 2rem; /* Shrink problem text */
+    }
+    #answer-container {
+        width: 80%;
+    }
+    #answer-input {
+        font-size: 1.5rem; /* Shrink input text */
     }
 }
