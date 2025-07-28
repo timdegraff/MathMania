@@ -31,7 +31,7 @@ const gameConfig = {
             label: 'Grades K-1',
             types: ['add', 'subtract'],
             numberRange: [1, 10],
-            fuelDrainRate: 0.3 // % per second
+            fuelDrainRate: 0.6 // % per second (2x faster)
         },
         '2-3': {
             label: 'Grades 2-3',
@@ -96,7 +96,7 @@ let fuel = 0;
 let fuelDrainInterval = null;
 let wrongAnswers = [];
 
-// --- Sound Effects (Updated with .wav files) ---
+// --- Sound Effects ---
 const clickSound = new Audio('sounds/click.mp3');
 const correctSound = new Audio('sounds/correct.wav');
 const incorrectSound = new Audio('sounds/incorrect.wav');
@@ -135,9 +135,28 @@ function setupDifficultyScreen() {
 function setupMissionScreen() {
     missionButtonsContainer.innerHTML = '';
     for (const key in gameConfig.missions) {
+        const mission = gameConfig.missions[key];
         const button = document.createElement('button');
-        button.textContent = `${gameConfig.missions[key].label} (${gameConfig.missions[key].questions} Qs)`;
+        button.classList.add('mission-button');
         button.onclick = () => selectMission(key);
+
+        const img = document.createElement('img');
+        img.src = mission.image;
+        img.alt = key;
+
+        const infoDiv = document.createElement('div');
+        infoDiv.classList.add('mission-info');
+        
+        const titleSpan = document.createElement('span');
+        titleSpan.textContent = mission.label;
+        
+        const questionSpan = document.createElement('span');
+        questionSpan.textContent = `${mission.questions} Questions`;
+
+        infoDiv.appendChild(titleSpan);
+        infoDiv.appendChild(questionSpan);
+        button.appendChild(img);
+        button.appendChild(infoDiv);
         missionButtonsContainer.appendChild(button);
     }
 }
@@ -369,8 +388,27 @@ function generateProblems() {
                 operator = '-';
                 break;
             case 'multiply':
-                num1 = rand(multDivRange[0], multDivRange[1]);
-                num2 = rand(multDivRange[0], multDivRange[1]);
+                const range = multDivRange;
+                num1 = rand(range[0], range[1]);
+
+                if (num1 >= 10) { // If num1 is a 2-digit number
+                    if (num1 > 14) {
+                        // num2 must be a 1-digit number (or 10)
+                        num2 = rand(range[0], 10);
+                    } else {
+                        // if num1 is 10-14, num2 can be up to 14
+                        num2 = rand(range[0], 14);
+                    }
+                } else { // if num1 is a 1-digit number
+                    // num2 can be any number in the full range
+                    num2 = rand(range[0], range[1]);
+                }
+                
+                // Randomly swap to ensure variety (e.g., 8 x 15 vs 15 x 8)
+                if (Math.random() > 0.5) {
+                    [num1, num2] = [num2, num1];
+                }
+
                 answer = num1 * num2;
                 operator = 'x';
                 break;
@@ -393,7 +431,7 @@ function generateProblems() {
 }
 
 function formatProblem(problem, isInline = false) {
-    const { num1, num2, operator, answer } = problem;
+    const { num1, num2, operator } = problem;
     if (operator === '^') {
         return isInline ? `${num1}<sup>${num2}</sup>` : `${num1}<sup>${num2}</sup>`;
     }
@@ -404,12 +442,12 @@ function formatProblem(problem, isInline = false) {
     const topStr = String(num1);
     const bottomStr = `${operator} ${String(num2)}`;
     const width = Math.max(topStr.length, bottomStr.length);
-    const line = '-'.repeat(width);
     
     const paddedTop = topStr.padStart(width);
     const paddedBottom = bottomStr.padStart(width);
 
-    return `${paddedTop}\n${paddedBottom}\n${line}`;
+    // Return without the horizontal line
+    return `${paddedTop}\n${paddedBottom}`;
 }
 
 // --- Helper Functions ---
